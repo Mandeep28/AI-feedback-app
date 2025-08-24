@@ -12,15 +12,18 @@ import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Brain, MessageSquare, TrendingUp, Users, EyeOff, Eye } from "lucide-react"
+import axios from "axios"
+import Cookies from "js-cookie"
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(loginSchema),
@@ -31,40 +34,58 @@ export default function LoginPage() {
   })
 
   const onSubmit = async (data) => {
-    setIsLoading(true)
-
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      setIsLoading(true);
+      const {data: resData} = await axios.post("/api/auth/login", data);
 
-      // For demo purposes, just show success and redirect
-      toast({
-        title: "Login successful!",
+      toast.success("Login successful! 🎉", {
         description: "Welcome back to InterviewAI.",
-      })
+      });
 
-      // In a real app, you would handle authentication here
-      router.push("/dashboard")
+      // Save token
+      Cookies.set("accessToken", resData.accessToken, {
+        expires: 1, // 1 day
+        secure: true,
+        sameSite: "strict",
+      });
+
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1200)
     } catch (error) {
-      toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
-        variant: "destructive",
-      })
+      if (error.response?.data) {
+        const { message, errors: serverErrors } = error.response.data;
+
+        // Handle field-level errors
+        if (serverErrors && typeof serverErrors === "object") {
+          Object.entries(serverErrors).forEach(([field, msg]) => {
+            setError(field, { type: "server", message: msg });
+          });
+        } else if (message) {
+          toast.error("Login failed", {
+            description: message,
+          });
+        }
+      } else {
+        toast.error("Login failed", {
+          description: "Something went wrong. Please try again.",
+        });
+      }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
+
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex max-w-screen-xl mx-auto">
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-background">
         <div className="w-full max-w-md space-y-8">
           {/* Logo and header */}
           <div className="text-center">
             <Link href="/" className="inline-flex items-center gap-2 text-2xl font-bold text-primary">
               <Brain className="h-8 w-8" />
-              InterviewAI
+              InsightsAI
             </Link>
             <h2 className="mt-6 text-3xl font-bold tracking-tight text-foreground">Welcome Back</h2>
             <p className="mt-2 text-sm text-muted-foreground">Sign in to your InterviewAI account</p>
@@ -98,25 +119,22 @@ export default function LoginPage() {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-4 h-4 cursor-pointer" /> : <Eye className="w-4 h-4 cursor-pointer" />}
                 </button>
               </div>
               {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
             </div>
 
-            <LoadingButton type="submit" loading={isLoading} className="w-full" size="lg">
+            <LoadingButton type="submit" loading={isLoading} className="w-full cursor-pointer" size="lg">
               Sign In
             </LoadingButton>
 
             <div className="flex items-center justify-between">
               <button
                 type="button"
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-primary hover:underline cursor-pointer"
                 onClick={() => {
-                  toast({
-                    title: "Password reset",
-                    description: "Password reset functionality would be implemented here.",
-                  })
+                  toast.info("Password reset functionality not implemented yet.")
                 }}
               >
                 Forgot your password?

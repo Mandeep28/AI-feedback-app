@@ -12,7 +12,7 @@ export default function LandingPage() {
           <nav className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Brain className="h-8 w-8 text-primary" />
-              <span className="text-xl font-bold text-foreground font-space-grotesk">InterviewAI</span>
+              <span className="text-xl font-bold text-foreground font-space-grotesk">InsightsAI</span>
             </div>
             <div className="hidden md:flex items-center space-x-6">
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -25,7 +25,7 @@ export default function LandingPage() {
                 Login
               </Link>
               <Link href="/register">
-                <Button variant="outline">Get Started</Button>
+                {/* <Button variant="outline">Get Started</Button> */}
               </Link>
             </div>
             <div className="md:hidden">
@@ -230,7 +230,7 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div className="flex items-center space-x-2 mb-4 md:mb-0">
               <Brain className="h-6 w-6 text-primary" />
-              <span className="text-lg font-bold text-foreground font-space-grotesk">InterviewAI</span>
+              <span className="text-lg font-bold text-foreground font-space-grotesk">InsightsAI</span>
             </div>
             <div className="flex items-center space-x-6">
               <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -239,7 +239,7 @@ export default function LandingPage() {
               <Link href="/register" className="text-muted-foreground hover:text-foreground transition-colors">
                 Register
               </Link>
-              <span className="text-muted-foreground text-sm">© 2024 InterviewAI</span>
+              <span className="text-muted-foreground text-sm">&copy; 2024 InsightsAI</span>
             </div>
           </div>
         </div>

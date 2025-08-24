@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Eye, EyeOff, Brain, Users, Target, TrendingUp } from "lucide-react"
 import Link from "next/link"
+import axios from "axios"
+import Cookies from "js-cookie"
 
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false)
@@ -22,6 +24,7 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
@@ -37,20 +40,31 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      const res = await axios.post("/api/auth/register", data)
 
-      toast({
-        title: "Account created successfully!",
+      toast.success("Account created successfully!", {
         description: "Welcome to InterviewAI. You can now start using our platform.",
       })
 
+      // Save token
+      Cookies.set("accessToken", resData.accessToken, {
+        expires: 1, // 1 day
+        secure: true,
+        sameSite: "strict",
+      });
+
       router.push("/dashboard")
     } catch (error) {
-      toast({
-        title: "Registration failed",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive",
+      if (error.response?.data?.errors) {
+        // Handle validation errors from API
+        const fieldErrors = error.response.data.errors
+        Object.keys(fieldErrors).forEach((field) => {
+          setError(field, { type: "server", message: fieldErrors[field] })
+        })
+      }
+
+      toast.error("Registration failed", {
+        description: error.response?.data?.error || "Something went wrong. Please try again.",
       })
     } finally {
       setIsLoading(false)
@@ -58,7 +72,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex max-w-screen-xl mx-auto">
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/10 via-purple-50 to-cyan-50 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-purple-100/50" />
 
@@ -105,7 +119,7 @@ export default function RegisterPage() {
               <div className="w-10 h-10 bg-gradient-to-br from-primary to-purple-600 rounded-lg flex items-center justify-center">
                 <Brain className="w-6 h-6 text-white" />
               </div>
-              <span className="ml-3 text-2xl font-bold text-gray-900">InterviewAI</span>
+              <span className="ml-3 text-2xl font-bold text-gray-900">InsightsAI</span>
             </div>
           </div>
 
@@ -163,7 +177,7 @@ export default function RegisterPage() {
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                       onClick={() => setShowPassword(!showPassword)}
                     >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? <EyeOff className="w-4 h-4 cursor-pointer" /> : <Eye className="w-4 h-4 cursor-pointer" />}
                     </button>
                   </div>
                   {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
@@ -186,7 +200,7 @@ export default function RegisterPage() {
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
-                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4 cursor-pointer" /> : <Eye className="w-4 h-4 cursor-pointer" />}
                     </button>
                   </div>
                   {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
