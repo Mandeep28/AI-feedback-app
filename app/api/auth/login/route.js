@@ -40,7 +40,7 @@ export const POST = asyncHandler(async (req) => {
     const token = signToken({ id: user._id, email: user.email });
 
     return NextResponse.json({
-        status: false,
+        status: true,
         message: "Login successful",
         accessToken: token,
     });

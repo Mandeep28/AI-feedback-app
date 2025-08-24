@@ -40,11 +40,7 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      const res = await axios.post("/api/auth/register", data)
-
-      toast.success("Account created successfully!", {
-        description: "Welcome to InterviewAI. You can now start using our platform.",
-      })
+      const {data: resData} = await axios.post("/api/auth/register", data)
 
       // Save token
       Cookies.set("accessToken", resData.accessToken, {
@@ -53,7 +49,12 @@ export default function RegisterPage() {
         sameSite: "strict",
       });
 
+      toast.success("Account created successfully!", {
+        description: "Welcome to InterviewAI. You can now start using our platform.",
+      })
+      
       router.push("/dashboard")
+
     } catch (error) {
       if (error.response?.data?.errors) {
         // Handle validation errors from API
