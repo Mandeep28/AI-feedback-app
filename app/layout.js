@@ -25,7 +25,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${spaceGrotesk.variable} ${dmSans.variable} antialiased`}>
       <body className="font-sans">
         {children}
-        <Toaster />
+        <Toaster
+          richColors={true}
+        />
       </body>
     </html>
   )
