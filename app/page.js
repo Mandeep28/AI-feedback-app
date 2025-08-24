@@ -94,7 +94,7 @@ export default function LandingPage() {
               Powerful Features for Everyone
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Whether you're preparing for interviews or evaluating candidates, our AI provides actionable insights.
+              Whether you&apos;re preparing for interviews or evaluating candidates, our AI provides actionable insights.
             </p>
           </div>
 
