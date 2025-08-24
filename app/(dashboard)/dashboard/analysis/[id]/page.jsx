@@ -49,12 +49,10 @@ function AnalysisContent() {
         const response = await axiosClient.get(
           `/api/dashboard/insights/${params.id}`
         );
-        console.log("Analysis data:", response.data.data);
-        debugger;
+
         setAnalysisData(response.data.data);
       } catch (error) {
         console.error("Error fetching analysis data:", error);
-        debugger;
 
         if (error.response?.status === 404) {
           router.push("/not-found");
