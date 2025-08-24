@@ -50,7 +50,7 @@ export default function RegisterPage() {
       });
 
       toast.success("Account created successfully!", {
-        description: "Welcome to InterviewAI. You can now start using our platform.",
+        description: "Welcome to InsightsAI. You can now start using our platform.",
       })
       
       router.push("/dashboard")

@@ -38,8 +38,8 @@ export default function LoginPage() {
       setIsLoading(true);
       const {data: resData} = await axios.post("/api/auth/login", data);
 
-      toast.success("Login successful! 🎉", {
-        description: "Welcome back to InterviewAI.",
+      toast.success("Login successful!", {
+        description: "Welcome back to InsightsAI.",
       });
 
       // Save token
