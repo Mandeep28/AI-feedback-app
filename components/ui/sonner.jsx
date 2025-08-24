@@ -10,6 +10,7 @@ const Toaster = ({
 
   return (
     <Sonner
+      position="bottom-center"
       theme={theme}
       className="toaster group"
       style={
